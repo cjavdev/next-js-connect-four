@@ -2,29 +2,25 @@ import {useState} from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 
-const GameColumn = ({col, idx, onClick}) => {
+const GameColumn = ({col, idx, onClick, gameOver}) => {
   return (
     <div className="column" key={`col-${idx}`} onClick={onClick}>
       {col.map((cell, x) => {
-        return <span className="cell" key={`cell-${idx}-${x}`}>{cell}</span>
+        return (
+        <>
+          <span 
+            className={`cell`} 
+            key={`cell-${idx}-${x}`}
+          >
+            {cell}
+          </span>
+          <style jsx>{`
+            transform: 
+              translateY(-${gameOver ? 0 : (x * 30) + 30}px)
+          `}</style>
+        </>
+        )
       })}
-      <style jsx>{`
-        .column {
-          display: flex;
-          flex-direction: column-reverse;
-          flex-grow: 1;
-          border: 1px solid blue;
-          padding: 10px;
-        }
-        .cell {
-          flex-grow: 1;
-          display: flex;
-          justify-content: center;
-          border: 1px solid red;
-          align-items: center;
-          height: 30px;
-        }
-      `}</style>
     </div>
   )
 }
@@ -96,7 +92,6 @@ const ConnectFourGame = () => {
   };
 
   const addPiece = (columnIdx) => {
-    console.log(columnIdx);
     const column = gameState[columnIdx];
     const piecePos = column.indexOf(null);
     column[piecePos] = currentPlayer;
@@ -114,18 +109,19 @@ const ConnectFourGame = () => {
   }
 
   return (
-    <div className="board">
-      <div>{winner && <h1>{winner} is the winner</h1>}</div>
+    <div className="layout">
+      <div className="update">{winner && <h1>{winner} is the winner</h1>}</div>
       Current player is {currentPlayer}.
-      {Object.entries(gameState).map(([k, col], x) => {
-        return <GameColumn col={col} idx={x} onClick={() => addPiece(x)} />;
-      })}
-      <style jsx>{`
-        .board {
-          display: flex;
-          flex: 1;
-        }
-      `}</style>
+        <div className="board">
+          {Object.entries(gameState).map(([k, col], x) => {
+            return <GameColumn 
+              col={col} 
+              idx={x} 
+              onClick={() => addPiece(x)} 
+              gameOver={gameOver()} 
+            />
+          })}
+        </div>
     </div>
   );
 }
