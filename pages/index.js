@@ -118,7 +118,7 @@ const ConnectFourGame = () => {
       <div>{winner && <h1>{winner} is the winner</h1>}</div>
       Current player is {currentPlayer}.
       {Object.entries(gameState).map(([k, col], x) => {
-        return <GameColumn col={col} idx={x} onClick={() => addPiece(x)} />;
+        return <GameColumn key={k} col={col} idx={x} onClick={() => addPiece(x)} />;
       })}
       <style jsx>{`
         .board {
